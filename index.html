@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="./photo_2024-12-17_00-47-29.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AniLens - New Year Edition</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #f9f3e3;
+            --text-color: #333;
+            --highlight-color: #e74c3c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+        }
+
+        .header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .header::before {
+            content: '✨';
+            font-size: 50px;
+            position: absolute;
+            left: 10px;
+            top: 10px;
+        }
+
+        .header::after {
+            content: '✨';
+            font-size: 50px;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+
+        .search-container {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid var(--secondary-color);
+            border-radius: 5px 0 0 5px;
+        }
+
+        .search-button {
+            padding: 10px 15px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-button:hover {
+            background-color: var(--highlight-color);
+        }
+
+        .anime-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .anime-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .anime-card:hover {
+            transform: scale(1.05);
+        }
+
+        .anime-image {
+            width: 100%;
+            height: 150px;
+            border-radius: 10px;
+            object-fit: cover;
+            margin-bottom: 15px;
+        }
+
+        .anime-title {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .anime-description {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .anime-link {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .anime-link:hover {
+            background-color: var(--highlight-color);
+        }
+
+        .no-results {
+            text-align: center;
+            color: #666;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .header p {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>AniLens</h1>
+            <p>New Year Specials! Find your favorite anime.</p>
+        </header>
+
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search anime...">
+            <button onclick="searchAnime()" class="search-button">Search</button>
+        </div>
+
+        <main id="animeList" class="anime-grid">
+            <!-- Anime entries will be dynamically loaded here -->
+        </main>
+    </div>
+
+    <script>
+        let allEntries = [];
+
+        function loadAnimeEntries() {
+            const animeList = document.getElementById('animeList');
+            allEntries = JSON.parse(localStorage.getItem('animeEntries') || '[]');
+            renderAnimeEntries(allEntries);
+        }
+
+        function renderAnimeEntries(entries) {
+            const animeList = document.getElementById('animeList');
+
+            // Clear existing entries
+            animeList.innerHTML = '';
+
+            // If no entries, show message
+            if (entries.length === 0) {
+                const noResultsDiv = document.createElement('div');
+                noResultsDiv.classList.add('no-results');
+                noResultsDiv.textContent = 'No anime found';
+                animeList.appendChild(noResultsDiv);
+                return;
+            }
+
+            // Populate anime entries
+            entries.forEach(entry => {
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add('anime-card');
+                cardDiv.innerHTML = `
+                    <img src="${entry.image}" alt="${entry.name}" class="anime-image">
+                    <div class="anime-title">${entry.name}</div>
+                    <div class="anime-description">${entry.description}</div>
+                    <a href="${entry.link}" target="_blank" class="anime-link">Watch Anime</a>
+                `;
+                animeList.appendChild(cardDiv);
+            });
+        }
+
+        function searchAnime() {
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            
+            // Filter entries based on search input
+            const filteredEntries = allEntries.filter(entry => 
+                entry.name.toLowerCase().includes(searchInput) || 
+                entry.description.toLowerCase().includes(searchInput)
+            );
+
+            // Render filtered entries
+            renderAnimeEntries(filteredEntries);
+        }
+
+        // Add event listener for Enter key in search input
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                searchAnime();
+            }
+        });
+
+        // Load entries when page loads
+        loadAnimeEntries();
+
+        // Event listener to reload entries if changes occur in local storage
+        window.addEventListener('storage', loadAnimeEntries);
+    </script>
+</body>
+</html>

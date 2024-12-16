@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="shortcut icon" href="./photo_2024-12-17_00-47-29.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - AniLens</title>
+    <style>
+        :root {
+            --primary-color: #d35400;
+            --secondary-color: #e67e22;
+            --background-color: #fbeee0;
+            --text-color: #333;
+            --accent-color: #e74c3c;
+            --banner-color: #2ecc71;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .admin-container {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            padding: 30px;
+            position: relative;
+        }
+
+        /* Festive Banner */
+        .new-year-banner {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--banner-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+
+        .login-section, .management-section {
+            display: none;
+        }
+
+        .section-active {
+            display: block;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(230, 126, 34, 0.5);
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .existing-entries {
+            margin-top: 20px;
+        }
+
+        .entry-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            animation: slide-in 0.5s ease;
+        }
+
+        @keyframes slide-in {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .entry-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 10px;
+            object-fit: cover;
+        }
+
+        .entry-item .entry-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .entry-item span {
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .entry-item .btn {
+            width: auto;
+            padding: 5px 10px;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+        }
+
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 5px rgba(230, 126, 34, 0.5);
+        }
+
+        /* Firework Animation */
+        @keyframes fireworks {
+            0% {
+                opacity: 1;
+                transform: scale(0);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .firework {
+            position: absolute;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            animation: fireworks 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="firework" style="top: 10%; left: 25%; animation-delay: 0s;"></div>
+    <div class="firework" style="top: 20%; left: 75%; animation-delay: 0.4s;"></div>
+    <div class="firework" style="top: 60%; left: 45%; animation-delay: 0.8s;"></div>
+
+    <div class="admin-container">
+        <div class="new-year-banner">Happy New Year!</div>
+
+        <!-- Login Section -->
+        <section id="loginSection" class="login-section section-active">
+            <h2>Admin Login</h2>
+            <div class="error-message" id="errorMessage"></div>
+            <div class="form-group">
+                <label for="passwordInput">Password</label>
+                <input type="password" id="passwordInput" placeholder="Enter Admin Password">
+            </div>
+            <button class="btn" onclick="attemptLogin()">Login</button>
+        </section>
+
+        <!-- Management Section -->
+        <section id="managementSection" class="management-section">
+            <h2>Anime Management</h2>
+
+            <div class="form-group">
+                <label for="animeName">Anime Name</label>
+                <input type="text" id="animeName" placeholder="Enter anime name">
+            </div>
+
+            <div class="form-group">
+                <label for="animeDescription">Description</label>
+                <textarea id="animeDescription" placeholder="Enter anime description" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="animeImage">Image URL</label>
+                <input type="text" id="animeImage" placeholder="Enter image URL">
+            </div>
+
+            <div class="form-group">
+                <label for="animeLink">Watch Link</label>
+                <input type="text" id="animeLink" placeholder="Enter watch link">
+            </div>
+
+            <button class="btn" onclick="addAnimeEntry()">Add Anime</button>
+
+            <div id="existingEntries" class="existing-entries">
+                <!-- Existing entries will be dynamically loaded here -->
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = '122306';
+
+        function attemptLogin() {
+            const passwordInput = document.getElementById('passwordInput').value;
+            const errorMessage = document.getElementById('errorMessage');
+
+            if (passwordInput === ADMIN_PASSWORD) {
+                document.getElementById('loginSection').classList.remove('section-active');
+                document.getElementById('managementSection').classList.add('section-active');
+                loadExistingEntries();
+            } else {
+                errorMessage.textContent = 'Incorrect Password';
+                setTimeout(() => {
+                    errorMessage.textContent = '';
+                }, 3000);
+            }
+        }
+
+        function addAnimeEntry() {
+            const name = document.getElementById('animeName').value;
+            const description = document.getElementById('animeDescription').value;
+            const image = document.getElementById('animeImage').value;
+            const link = document.getElementById('animeLink').value;
+
+            if (!name || !description || !image || !link) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const entries = JSON.parse(localStorage.getItem('animeEntries') || '[]');
+            entries.push({ name, description, image, link });
+            localStorage.setItem('animeEntries', JSON.stringify(entries));
+
+            document.getElementById('animeName').value = '';
+            document.getElementById('animeDescription').value = '';
+            document.getElementById('animeImage').value = '';
+            document.getElementById('animeLink').value = '';
+
+            loadExistingEntries();
+        }
+
+        function deleteAnimeEntry(index) {
+            const entries = JSON.parse(localStorage.getItem('animeEntries') || '[]');
+            entries.splice(index, 1);
+            localStorage.setItem('animeEntries', JSON.stringify(entries));
+            loadExistingEntries();
+        }
+
+        function loadExistingEntries() {
+            const entriesContainer = document.getElementById('existingEntries');
+            const entries = JSON.parse(localStorage.getItem('animeEntries') || '[]');
+
+            entriesContainer.innerHTML = '<h3>Existing Entries</h3>';
+
+            entries.forEach((entry, index) => {
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('entry-item');
+                entryDiv.innerHTML = `
+                    <div class="entry-info">
+                        <img src="${entry.image}" alt="Anime Image">
+                        <div>
+                            <span>${entry.name}</span>
+                            <p>${entry.description}</p>
+                        </div>
+                    </div>
+                    <a href="${entry.link}" target="_blank" class="btn">Watch</a>
+                    <button class="btn" onclick="deleteAnimeEntry(${index})">Delete</button>
+                `;
+                entriesContainer.appendChild(entryDiv);
+            });
+        }
+    </script>
+</body>
+</html>
